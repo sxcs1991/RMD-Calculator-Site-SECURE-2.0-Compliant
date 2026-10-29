@@ -21,281 +21,267 @@
 "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
 "description":"Required Minimum Distribution calculator for active, terminated and deceased retirement plan participants, built to SECURE 2.0 and the July 2024 final regulations under IRC 401(a)(9)."}
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap">
 <style>
+  /* ============================================================
+     RMD Calculator — modernized stylesheet (v2)
+     Same markup, IDs and calculation engine as v1; only the look changed.
+     ============================================================ */
+  :root{
+    --navy:#0F2E52; --navy-2:#173E6B; --accent:#2563C9; --accent-soft:#EAF1FC; --accent-line:#C9DBF6;
+    --ink:#111827; --ink-2:#374151; --muted:#6B7280; --faint:#9CA3AF;
+    --page:#F5F6F8; --surface:#FFFFFF; --sunk:#F7F8FA; --line:#E5E7EB; --line-2:#D1D5DB;
+    --warn:#B45309; --warn-ink:#78350F; --warn-soft:#FFF8EB; --warn-line:#F6D58A;
+    --ok:#047857; --bad:#DC2626;
+    --r-sm:8px; --r:12px; --r-lg:16px;
+    --shadow:0 1px 2px rgba(16,24,40,.04),0 1px 3px rgba(16,24,40,.04);
+    --shadow-lg:0 10px 30px -12px rgba(15,46,82,.18);
+    --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:#FFFFFF;color:#111827;line-height:1.55;min-height:100vh;-webkit-font-smoothing:antialiased}
-  .header{background:#0F2E52;color:#fff;padding:18px 32px;display:flex;align-items:center;gap:12px;border-bottom:3px solid #2B7BC4}
-  .header h1{font-size:20px;font-weight:700;letter-spacing:0.3px}
-  .header .badge{background:#1A5CA8;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.5px}
-  .subhead{max-width:960px;margin:24px auto 8px;padding:0 24px;font-size:14px;color:#4B5563}
-  .container{max-width:960px;margin:0 auto 60px;padding:0 24px}
-  .tabs{display:flex;gap:0;margin-bottom:0;border-bottom:2px solid #E3E8EF;flex-wrap:wrap}
-  .tab-btn{padding:12px 28px;font-size:14px;font-weight:600;border:none;background:transparent;color:#9CA3AF;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.15s}
-  .tab-btn:hover{color:#0F2E52}
-  .tab-btn.active{color:#0F2E52;border-bottom-color:#1A5CA8}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--page);color:var(--ink);line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss01"}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+
+  /* ---------- header ---------- */
+  .header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.88);backdrop-filter:saturate(1.6) blur(12px);-webkit-backdrop-filter:saturate(1.6) blur(12px);border-bottom:1px solid var(--line);color:var(--navy)}
+  .header-inner{max-width:1008px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:12px}
+  .brand-mark{width:32px;height:32px;border-radius:9px;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700;font-size:16px;flex:none}
+  .header h1{font-family:var(--sans);font-size:18px;font-weight:700;letter-spacing:-.2px;color:var(--navy)}
+  .header .badge{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-line);font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px}
+  .header .privacy{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted)}
+  .header .privacy::before{content:"";width:8px;height:8px;border-radius:50%;background:#10B981;box-shadow:0 0 0 3px rgba(16,185,129,.18)}
+
+  /* ---------- intro ---------- */
+  .subhead-row{max-width:1008px;margin:40px auto 24px;padding:0 24px;display:block}
+  .intro-title{font-family:var(--serif);font-size:clamp(28px,4vw,38px);line-height:1.15;font-weight:600;letter-spacing:-.6px;color:var(--navy);max-width:30ch;margin-bottom:12px}
+  .subhead{font-size:16px;color:var(--muted);margin:0;padding:0}
+
+  /* ---------- layout ---------- */
+  .page-wrap{display:flex;justify-content:center;max-width:1008px;margin:0 auto;padding:0 24px}
+  .container{max-width:960px;flex:1;min-width:0;margin:0 auto 64px;padding:0}
+
+  /* ---------- tabs: segmented control ---------- */
+  .tabs{display:flex;gap:4px;padding:4px;margin-bottom:20px;background:#E9ECF1;border-radius:var(--r);border:none;flex-wrap:wrap}
+  .tab-btn{flex:1 1 auto;padding:10px 18px;font-size:14px;font-weight:600;font-family:inherit;border:none;background:transparent;color:var(--muted);cursor:pointer;border-radius:9px;transition:background .15s,color .15s,box-shadow .15s;white-space:nowrap}
+  .tab-btn:hover{color:var(--navy)}
+  .tab-btn.active,.tab-btn[aria-selected="true"]{background:var(--surface);color:var(--navy);box-shadow:0 1px 3px rgba(16,24,40,.12)}
   .tab-content{display:none}
-  .tab-content.active{display:block}
-  .card{background:#fff;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.08);padding:28px 32px;margin-bottom:20px}
-  .card h2{font-size:18px;font-weight:600;color:#0F2E52;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid #E3E8EF}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}
+  .tab-content.active{display:block;animation:fadeUp .2s ease-out}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:28px 32px;margin-bottom:16px}
+  .card h2{font-family:var(--serif);font-size:21px;font-weight:600;letter-spacing:-.2px;color:var(--navy);margin-bottom:18px;padding:0;border:none}
+  .card h2 .hint{font-family:var(--sans)}
+
+  /* ---------- forms ---------- */
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px}
   .form-grid.three{grid-template-columns:1fr 1fr 1fr}
-  .field{display:flex;flex-direction:column;gap:4px}
-  .field label{font-size:15px;font-weight:600;color:#374151}
-  .field label .hint{font-weight:400;color:#9CA3AF;font-size:12px}
-  .field input,.field select{padding:10px 12px;border:1px solid #CBD5E1;border-radius:6px;font-size:14px;color:#111827;background:#fff;transition:border-color 0.15s,box-shadow 0.15s;outline:none;font-family:inherit}
-  .field input:focus,.field select:focus{border-color:#1A5CA8;box-shadow:0 0 0 3px rgba(204,120,92,0.15)}
-  .field input:disabled,.field input[readonly]{background:#EEF2F7;color:#4B5563;cursor:default}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:14px;font-weight:600;color:var(--ink-2)}
+  .field label .hint,.hint{font-weight:400;color:var(--faint);font-size:12px}
+  .field input,.field select{height:44px;padding:0 14px;border:1px solid var(--line-2);border-radius:10px;font-size:15px;color:var(--ink);background:var(--surface);transition:border-color .15s,box-shadow .15s;outline:none;font-family:inherit;width:100%}
+  .field input:hover,.field select:hover{border-color:#9CA3AF}
+  .field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(37,99,201,.14)}
+  .field input:disabled,.field input[readonly]{background:var(--sunk);color:var(--ink-2);border-style:dashed;cursor:default;font-weight:600}
+  .field input::placeholder,.data-table input::placeholder{color:#B0B6C0}
   .field-select{position:relative}
-  .field-select select{appearance:none;padding-right:36px;cursor:pointer;width:100%}
-  .field-select::after{content:'\25be';position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:14px;color:#9CA3AF;pointer-events:none}
-  .info-box{background:#EAF2FB;border-left:4px solid #1A5CA8;padding:14px 18px;border-radius:4px;font-size:15px;color:#0F2E52;margin-bottom:16px;line-height:1.6}
-  .btn-row{display:flex;gap:12px;margin-top:20px;align-items:center;flex-wrap:wrap}
-  .btn{padding:10px 28px;border:none;border-radius:6px;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s,transform 0.1s;font-family:inherit}
-  .btn:active{transform:scale(0.97)}
-  .btn-primary{background:#0F2E52;color:#fff}
-  .btn-primary:hover{background:#0A2340}
-  .btn-secondary{background:#E3E8EF;color:#1F2937}
-  .btn-secondary:hover{background:#E3E8EF}
-  .btn-sm{padding:6px 16px;font-size:15px}
-  .btn-danger-sm{padding:4px 10px;font-size:12px;background:#E3E8EF;color:#6B7280;border:none;border-radius:4px;cursor:pointer;font-family:inherit}
-  .btn-danger-sm:hover{background:#DC2626;color:#fff}
-  .calc-btn-wrap{display:flex;justify-content:center;margin-bottom:20px}
-  .calc-btn-wrap .btn{padding:12px 48px;font-size:16px}
-  .data-table-wrap{overflow-x:auto;margin-top:12px}
-  .data-table{width:100%;border-collapse:collapse;font-size:15px}
-  .data-table th{background:#EEF2F7;color:#374151;font-weight:600;font-size:12px;padding:8px;text-align:left;border-bottom:2px solid #E3E8EF;white-space:nowrap}
-  .data-table td{padding:6px 8px;border-bottom:1px solid #E3E8EF;vertical-align:top}
-  .data-table input,.data-table select{width:100%;padding:6px 8px;border:1px solid #CBD5E1;border-radius:4px;font-size:15px;outline:none;font-family:inherit}
-  .data-table input:focus,.data-table select:focus{border-color:#1A5CA8}
+  .field-select select{appearance:none;-webkit-appearance:none;padding-right:38px;cursor:pointer;width:100%;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 4.5 6 8l3.5-3.5' fill='none' stroke='%236B7280' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+  .field-select::after{content:none}
+  .checkbox-row{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .checkbox-row input[type=checkbox],.data-table input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--accent)}
+  .checkbox-row label{font-size:14px;color:var(--ink-2);cursor:pointer;font-weight:500}
+  optgroup{font-style:normal;font-weight:700;color:var(--navy)}
+  .dateint{font-variant-numeric:tabular-nums;letter-spacing:.3px}
+  .bad-date{border-color:var(--bad)!important;background:#FEF2F2!important}
+
+  /* ---------- notes & badges ---------- */
+  .info-box{background:var(--accent-soft);border:1px solid var(--accent-line);border-left:4px solid var(--accent);padding:14px 18px;border-radius:10px;font-size:14px;color:var(--ink-2);margin-bottom:18px;line-height:1.65}
+  .warn-box{background:var(--warn-soft);border:1px solid var(--warn-line);border-left:4px solid var(--warn);padding:12px 16px;border-radius:10px;font-size:14px;color:var(--warn-ink);margin:4px 0 16px;line-height:1.65}
+  .warn-box div+div{margin-top:8px;padding-top:8px;border-top:1px solid var(--warn-line)}
+  .rbd-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);border:1px solid var(--accent-line);padding:8px 14px;border-radius:999px;font-size:14px;color:var(--navy);margin:18px 0 14px}
+  .rbd-badge strong{font-weight:700}
+  .table-note{margin-top:14px;padding:10px 14px;background:var(--sunk);border:1px solid var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+  .table-note strong{color:var(--navy)}
+
+  /* ---------- buttons ---------- */
+  .btn-row{display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 22px;border:1px solid transparent;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;transition:background .15s,box-shadow .15s,transform .1s,border-color .15s;font-family:inherit;text-decoration:none}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--navy);color:#fff;box-shadow:0 1px 2px rgba(15,46,82,.3),inset 0 1px 0 rgba(255,255,255,.08)}
+  .btn-primary:hover{background:var(--navy-2);box-shadow:var(--shadow-lg)}
+  .btn-secondary{background:var(--surface);color:var(--ink-2);border-color:var(--line-2)}
+  .btn-secondary:hover{background:var(--sunk);border-color:#9CA3AF}
+  .btn-sm{min-height:36px;padding:0 14px;font-size:14px}
+  .btn-danger-sm{width:30px;height:30px;padding:0;font-size:14px;line-height:1;background:transparent;color:var(--faint);border:1px solid transparent;border-radius:8px;cursor:pointer;font-family:inherit;transition:all .15s}
+  .btn-danger-sm:hover{background:#FEF2F2;color:var(--bad);border-color:#FECACA}
+  .calc-btn-wrap{display:flex;justify-content:center;gap:12px;margin:8px 0 24px}
+  .calc-btn-wrap .btn{min-height:50px;padding:0 40px;font-size:16px}
+  .calc-btn-wrap .btn-secondary{margin-left:0!important}
+
+  /* ---------- input tables ---------- */
+  .data-table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--line);border-radius:var(--r)}
+  .data-table{width:100%;border-collapse:collapse;font-size:14px}
+  .data-table th{background:var(--sunk);color:var(--muted);font-weight:600;font-size:12px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  .data-table td{padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+  .data-table tbody tr:last-child td{border-bottom:none}
+  .data-table tbody tr:hover td{background:#FAFBFC}
+  .data-table input,.data-table select{width:100%;height:38px;padding:0 10px;border:1px solid var(--line-2);border-radius:8px;font-size:14px;outline:none;font-family:inherit;background:var(--surface);font-variant-numeric:tabular-nums}
+  .data-table input[type=checkbox]{width:18px;height:18px}
+  .data-table input:focus,.data-table select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,201,.14)}
   .data-table .num-input{max-width:90px;text-align:right}
-  .data-table .year-input{max-width:80px}
+  .data-table .year-input{max-width:96px}
   .data-table .actions-col{text-align:center;min-width:50px}
-  .data-table .sum-row td{border-top:2px solid #E3E8EF;font-weight:600;font-size:15px;padding-top:8px}
-  .data-table .sum-row .ok{color:#059669}
-  .data-table .sum-row .bad{color:#DC2626}
-  .results-card{border:2px solid #1A5CA8;border-radius:8px;padding:0;overflow:hidden}
-  .results-header{background:#1A5CA8;color:#fff;padding:14px 24px;font-size:16px;font-weight:600}
-  .results-body{padding:24px}
-  .yr-group{margin-bottom:10px;border:1px solid #E3E8EF;border-radius:6px;overflow:hidden}
-  .yr-hdr{display:flex;align-items:center;gap:16px;padding:10px 16px;background:#F6F8FB;cursor:pointer;border-bottom:1px solid #E3E8EF;user-select:none;transition:background 0.1s}
-  .yr-hdr:hover{background:#EDF3FA}
-  .yr-hdr .tog{width:20px;text-align:center;font-size:14px;color:#9CA3AF;transition:transform 0.2s}
-  .yr-hdr .tog.open{transform:rotate(90deg)}
-  .yr-hdr .yl{font-weight:700;color:#0F2E52;min-width:60px}
-  .yr-hdr .yi{color:#374151;font-size:15px}
-  .yr-hdr .yr{font-weight:700;color:#0F2E52;font-size:14px;margin-left:auto}
-  .yr-det{padding:0}
-  .yr-det.collapsed{display:none}
-  .dtbl{width:100%;border-collapse:collapse;font-size:15px}
-  .dtbl th{background:#F6F8FB;color:#6B7280;font-weight:600;font-size:12px;padding:8px 16px;text-align:right;border-bottom:1px solid #E3E8EF}
-  .dtbl th:first-child{text-align:left}
-  .dtbl td{padding:7px 16px;text-align:right;border-bottom:1px solid #EEF2F7;font-variant-numeric:tabular-nums}
-  .dtbl td:first-child{text-align:left;color:#0F2E52;font-weight:500}
-  .dtbl tr:last-child td{border-bottom:none}
-  .sum-line{margin-top:16px;font-size:14px;color:#4B5563;padding:10px 14px;background:#F6F8FB;border-radius:4px}
-  .rnote{margin-top:16px;font-size:12px;color:#9CA3AF;line-height:1.6;padding:12px 16px;background:#F6F8FB;border-radius:4px;border:1px solid #E3E8EF}
-  .rbd-badge{display:inline-block;background:#EAF2FB;border:1px solid #BDD7EE;padding:8px 14px;border-radius:6px;font-size:15px;color:#0F2E52;margin-bottom:14px;font-weight:400}
-  .rbd-badge strong{font-weight:600}
-  .hidden{display:none!important}
-  .page-wrap{display:flex;justify-content:center;max-width:1180px;margin:0 auto;padding:0 24px}
-  .container{max-width:960px;flex:1;min-width:0}
-  .checkbox-row{display:flex;align-items:center;gap:8px;margin-top:4px}
-  .checkbox-row input[type=checkbox]{width:18px;height:18px;cursor:pointer}
-  .checkbox-row label{font-size:15px;color:#374151;cursor:pointer}
-  @media(max-width:700px){
-    .form-grid,.form-grid.three{grid-template-columns:1fr}
-    .card{padding:20px 16px}
-    .header{padding:12px 16px}
-    .header h1{font-size:17px}
-    .container{padding:0 12px}
-    .tab-btn{padding:10px 16px;font-size:15px}
-    .yr-hdr{flex-wrap:wrap;gap:6px;padding:8px 10px}
-    .yr-hdr .yl{min-width:40px}
-    .yr-hdr .yi{font-size:12px;order:3;width:100%}
-    .yr-hdr .yr{font-size:15px}
-    .dtbl{font-size:12px}
-    .dtbl th,.dtbl td{padding:5px 8px}
-    .data-table{font-size:12px}
-    .data-table th,.data-table td{padding:5px 6px}
-    .data-table .num-input{max-width:70px}
-    .data-table .year-input{max-width:65px}
-    .btn{padding:8px 18px;font-size:15px}
-    .calc-btn-wrap .btn{padding:10px 28px;font-size:14px}
-    .results-body{padding:16px}
-    .results-header{padding:12px 16px;font-size:14px}
-  }
-  @media(max-width:480px){
-    .header{padding:10px 12px}
-    .header h1{font-size:15px}
-    .header .badge{font-size:10px;padding:2px 8px}
-    .tab-btn{padding:8px 10px;font-size:12px}
-    .card{padding:14px 10px}
-    .card h2{font-size:15px}
-    .data-table input,.data-table select{font-size:12px;padding:5px 4px}
-    .field input,.field select{font-size:15px;padding:8px 10px}
-    .yr-hdr .yi{font-size:11px}
-    .data-table .num-input{max-width:55px}
-    .data-table .year-input{max-width:55px}
-  }
-
-  .warn-box{background:#FFFBEB;border-left:4px solid #B45309;padding:12px 16px;border-radius:4px;font-size:13px;color:#78350F;margin-bottom:14px;line-height:1.7}
-  .warn-box div+div{margin-top:8px;padding-top:8px;border-top:1px solid #FCD34D}
-  .table-note{margin-top:10px;padding:10px 14px;background:#F6F8FB;border-radius:4px;font-size:14px;color:#4B5563}
-  .field-select select,.field select{width:100%}
+  .data-table .sum-row td{border-top:1px solid var(--line);background:var(--sunk);font-weight:600;font-size:14px;padding:10px 12px}
+  .data-table .sum-row .ok{color:var(--ok)}
+  .data-table .sum-row .bad{color:var(--bad)}
   #dcBenRows select{min-width:180px}
-  .dtbl td{vertical-align:top}
-  optgroup{font-style:normal;font-weight:700;color:#0F2E52}
+  #dcBenRows .dateint{min-width:118px}
 
-  /* --- accessibility & chrome --- */
-  .skip{position:absolute;left:-9999px;top:0;background:#0F2E52;color:#fff;padding:10px 16px;z-index:100;border-radius:0 0 6px 0}
+  /* ---------- results ---------- */
+  .results-card{border:1px solid var(--accent-line);border-radius:var(--r-lg);padding:0;overflow:hidden;box-shadow:var(--shadow-lg);animation:fadeUp .25s ease-out}
+  .results-header{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:18px 28px;font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:-.1px}
+  .results-body{padding:24px 28px}
+  .results-body > .btn{margin-right:8px}
+  .yr-group{margin-bottom:10px;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+  .yr-hdr{display:flex;align-items:center;gap:16px;padding:14px 18px;background:var(--surface);cursor:pointer;border-bottom:1px solid var(--line);user-select:none;transition:background .12s}
+  .yr-hdr:hover{background:var(--sunk)}
+  .yr-hdr .tog{width:22px;height:22px;display:grid;place-items:center;font-size:12px;color:var(--muted);background:var(--sunk);border-radius:6px;transition:transform .2s}
+  .yr-hdr .tog.open{transform:rotate(90deg)}
+  .yr-hdr .yl{font-weight:700;color:var(--navy);min-width:60px;font-variant-numeric:tabular-nums}
+  .yr-hdr .yi{color:var(--muted);font-size:14px}
+  .yr-hdr .yr{font-weight:700;color:var(--navy);font-size:17px;margin-left:auto;font-variant-numeric:tabular-nums}
+  .yr-det{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .yr-det.collapsed{display:none}
+  .dtbl{width:100%;border-collapse:collapse;font-size:14px}
+  .dtbl th{background:var(--sunk);color:var(--muted);font-weight:600;font-size:12px;padding:9px 18px;text-align:right;border-bottom:1px solid var(--line)}
+  .dtbl th:first-child{text-align:left}
+  .dtbl td{padding:9px 18px;text-align:right;border-bottom:1px solid #F0F1F4;font-variant-numeric:tabular-nums;vertical-align:top}
+  .dtbl td:first-child{text-align:left;color:var(--navy);font-weight:500}
+  .dtbl tr:last-child td{border-bottom:none}
+  .sum-line{margin:16px 0 14px;font-size:15px;color:var(--ink-2);padding:14px 18px;background:var(--sunk);border:1px solid var(--line);border-radius:var(--r)}
+  .rnote{margin-top:16px;font-size:13px;color:var(--muted);line-height:1.6;padding:12px 16px;background:var(--sunk);border-radius:10px;border:1px solid var(--line)}
+  .hidden{display:none!important}
+
+  /* ---------- rules tab ---------- */
+  .rules-hero{background:radial-gradient(120% 140% at 0% 0%,#1F4C82 0%,var(--navy) 55%,#0A2340 100%)!important;border:none!important;color:#fff;padding:36px 36px!important}
+  .rules-hero h2{color:#fff!important;font-size:28px!important}
+  .rule-card h3{font-size:16px;color:var(--navy);margin:24px 0 8px;font-weight:700}
+  .rule-card h3:first-of-type{margin-top:0}
+  .rule-card p{font-size:15px;color:var(--ink-2);line-height:1.75;margin-bottom:10px}
+  .rule-card ul{margin:0 0 12px 20px;font-size:15px;color:var(--ink-2);line-height:1.75}
+  .rule-card li{margin-bottom:5px}
+  .rule-card h2{margin:28px 0 12px}
+  .rule-card h2:first-child{margin-top:0}
+  .callout{border:1px solid var(--accent-line);border-left:4px solid var(--accent);background:var(--accent-soft);padding:14px 18px;border-radius:10px;margin:14px 0;font-size:15px;line-height:1.7}
+  .callout.warn{border-color:var(--warn-line);border-left-color:var(--warn);background:var(--warn-soft);color:var(--warn-ink)}
+  .ref-table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .ref-table th{background:var(--sunk);padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);font-weight:600;font-size:12px;color:var(--muted)}
+  .ref-table td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  .ref-table tr:last-child td{border-bottom:none}
+  .guide-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .guide{border:1px solid var(--line);border-radius:var(--r);background:var(--surface);transition:border-color .15s,box-shadow .15s}
+  .guide[open]{border-color:var(--accent-line);box-shadow:var(--shadow-lg)}
+  .guide summary{position:relative;cursor:pointer;padding:16px 52px 16px 20px;font-size:16px;font-weight:600;color:var(--navy);list-style:none;display:flex;flex-direction:column;gap:4px;border-radius:var(--r)}
+  .guide summary::-webkit-details-marker{display:none}
+  .guide summary::after{content:"+";position:absolute;right:16px;top:14px;width:26px;height:26px;display:grid;place-items:center;font-size:18px;color:var(--accent);background:var(--accent-soft);border-radius:8px}
+  .guide[open] summary::after{content:"\2212"}
+  .guide summary:hover{background:var(--sunk)}
+  .guide-tag{font-size:12px;font-weight:600;color:var(--accent)}
+  .guide-body{padding:6px 20px 18px;border-top:1px solid var(--line)}
+  .guide-body .lead{font-size:16px!important;color:var(--navy)!important;font-weight:500;margin-top:14px}
+  .guide-body h3{margin-top:20px!important}
+
+  /* ---------- disclaimer ---------- */
+  .disclaimer-card{background:var(--warn-soft)!important;border:1px solid var(--warn-line)!important;margin-top:28px}
+  .disclaimer-card h2{color:var(--warn)!important;font-size:18px!important}
+
+  /* ---------- footer ---------- */
+  .site-footer{background:var(--navy);color:#C7D5E5;margin-top:48px;padding:40px 24px 28px;font-size:14px;line-height:1.8}
+  .site-footer .inner{max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;gap:32px;justify-content:space-between}
+  .site-footer strong{color:#fff;display:inline-block;margin-bottom:4px}
+  .site-footer a{color:#A9CBF2;text-decoration:none}
+  .site-footer a:hover{color:#fff;text-decoration:underline}
+
+  /* ---------- accessibility ---------- */
+  .skip{position:absolute;left:-9999px;top:0;background:var(--navy);color:#fff;padding:10px 16px;z-index:100;border-radius:0 0 8px 0}
   .skip:focus{left:0}
-  a{color:#1A5CA8}
-  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #1A5CA8;outline-offset:2px}
-  .tab-btn[aria-selected="true"]{color:#0F2E52;border-bottom-color:#1A5CA8}
-  .site-footer{background:#0F2E52;color:#C7D5E5;margin-top:40px;padding:28px 24px;font-size:13px;line-height:1.8}
-  .site-footer .inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between}
-  .site-footer strong{color:#fff}
-  .site-footer a{color:#7FB3E8;text-decoration:none}
-  .site-footer a:hover{text-decoration:underline}
-  .subhead-row{max-width:960px;margin:24px auto 8px;padding:0 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  .subhead-row .subhead{margin:0;padding:0;flex:1;min-width:260px}
-  /* --- embed mode: ?embed=1 strips our own chrome so the page blends into a host site --- */
+  a{color:var(--accent)}
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+  /* ---------- embed mode: ?embed=1 ---------- */
   html.is-embed body{background:transparent}
   html.is-embed .header,html.is-embed .subhead-row,html.is-embed .site-footer,html.is-embed .skip{display:none!important}
   html.is-embed .page-wrap{padding:0 12px}
-  html.is-embed .container{margin-bottom:24px}
-  .dateint{font-variant-numeric:tabular-nums;letter-spacing:0.3px}
-  .bad-date{border-color:#DC2626!important;background:#FEF2F2!important}
-  #dcBenRows .dateint{min-width:112px}
-  /* --- rules tab --- */
-  .rule-card h3{font-size:16px;color:#0F2E52;margin:22px 0 8px}
-  .rule-card h3:first-of-type{margin-top:0}
-  .rule-card p{font-size:15px;color:#374151;line-height:1.75;margin-bottom:10px}
-  .rule-card ul{margin:0 0 12px 20px;font-size:15px;color:#374151;line-height:1.75}
-  .rule-card li{margin-bottom:5px}
-  .callout{border-left:4px solid #1A5CA8;background:#EAF2FB;padding:14px 18px;border-radius:4px;margin:14px 0;font-size:15px;line-height:1.7}
-  .callout.warn{border-left-color:#B45309;background:#FFFBEB;color:#78350F}
-  .ref-table{width:100%;border-collapse:collapse;font-size:14px;margin:12px 0}
-  .ref-table th{background:#EEF2F7;padding:9px 12px;text-align:left;border-bottom:2px solid #E3E8EF;font-weight:600;font-size:13px}
-  .ref-table td{padding:8px 12px;border-bottom:1px solid #E3E8EF;vertical-align:top}
-  .ref-table tr:last-child td{border-bottom:none}
-  .guide-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-  .guide{border:1px solid #E3E8EF;border-radius:6px;background:#fff}
-  .guide[open]{border-color:#1A5CA8}
-  .guide summary{cursor:pointer;padding:14px 18px;font-size:15px;font-weight:600;color:#0F2E52;list-style:none;display:flex;flex-direction:column;gap:3px}
-  .guide summary::-webkit-details-marker{display:none}
-  .guide summary::after{content:"+";position:absolute;right:18px;top:12px;font-size:20px;color:#1A5CA8}
-  .guide summary{position:relative;padding-right:44px}
-  .guide[open] summary::after{content:"\2212"}
-  .guide summary:hover{background:#F5F8FC}
-  .guide-tag{font-size:11px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;color:#1A5CA8}
-  .guide-body{padding:4px 18px 16px;border-top:1px solid #E3E8EF}
-  .guide-body .lead{font-size:16px!important;color:#0F2E52!important;font-weight:500;margin-top:12px}
-  .guide-body h3{margin-top:20px!important}
-  @media print{
-    .tabs,.site-footer,.btn,.calc-btn-wrap,.skip{display:none!important}
-    .tab-content{display:block!important}
-    .yr-det.collapsed{display:block!important}
-    .guide .guide-body{display:block!important}
-    body{background:#fff}
-    .card{box-shadow:none;border:1px solid #E3E8EF;break-inside:avoid}
-  }
+  html.is-embed .container{margin:12px auto 24px}
 
-  /* ============================================================
-     MOBILE HARDENING
-     Three real problems were present:
-     1. .page-wrap and .container each applied 24px side padding, so a
-        360px phone lost 96px of width to gutters.
-     2. Result tables are generated by JS straight into .yr-det with no
-        scroll container, so a wide row could push the whole page sideways.
-     3. iOS Safari zooms the viewport whenever a focused input has a font
-        size below 16px. Several inputs were 12-15px, so tapping a field
-        zoomed the page in and left it there.
-     ============================================================ */
+  /* ---------- guide pages (shared) ---------- */
+  .crumb{font-size:13px;color:var(--muted);margin:0 0 14px;padding:0 2px}
+  .crumb a{color:var(--accent);text-decoration:none}
+  .crumb a:hover{text-decoration:underline}
+  .rule-card h1{font-family:var(--serif);font-size:30px;line-height:1.2;color:var(--navy);margin:0 0 16px;letter-spacing:-.4px;font-weight:600}
+  .rule-card .lead{font-size:18px;line-height:1.6;color:var(--ink);margin-bottom:18px}
+  .cta-box{margin-top:28px;padding:20px;background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:var(--r)}
+  .cta-box p{font-size:15px;color:var(--ink-2);margin:0 0 14px;line-height:1.65}
+  ul.related{list-style:none;margin:0;padding:0}
+  ul.related li{padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+  ul.related li:last-child{border-bottom:none}
+  ul.related a{color:var(--accent);text-decoration:none}
+  .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px}
+  .guide-grid a{display:block;padding:14px 16px;background:var(--sunk);border:1px solid var(--line);border-radius:var(--r);text-decoration:none;color:var(--navy);font-size:15px;font-weight:600;line-height:1.45}
+  .guide-grid a:hover{border-color:var(--accent-line);background:var(--accent-soft)}
+  .guide-grid a span{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:4px}
+
+  /* ---------- responsive ---------- */
   html,body{max-width:100%;overflow-x:hidden}
-  .page-wrap{padding:0 16px}
-  .container{padding:0}
-  .data-table-wrap,.yr-det{-webkit-overflow-scrolling:touch}
-  .yr-det{overflow-x:auto}
   @media(max-width:700px){
-    .page-wrap{padding:0 10px}
-    .container{padding:0}
-    .subhead-row{padding:0 10px;gap:10px;margin-top:16px}
-    .subhead-row .subhead{min-width:0;font-size:14px}
-    /* let the tab bar scroll sideways rather than stack into three rows */
+    .header-inner{padding:12px 16px}
+    .header .privacy{display:none}
+    .subhead-row{margin:28px auto 18px;padding:0 16px}
+    .page-wrap{padding:0 12px}
+    .form-grid,.form-grid.three{grid-template-columns:1fr}
+    .card{padding:20px 16px;border-radius:var(--r)}
+    .card h2{font-size:19px}
     .tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
     .tabs::-webkit-scrollbar{display:none}
-    .tab-btn{white-space:nowrap;flex:0 0 auto}
-    .dtbl{min-width:400px}
-    .card{padding:18px 14px}
-    .results-body{padding:14px 10px}
-    .yr-hdr{padding:10px 12px}
+    .tab-btn{flex:0 0 auto;padding:9px 14px;font-size:14px}
+    .yr-hdr{flex-wrap:wrap;gap:6px 12px;padding:12px}
+    .yr-hdr .yi{font-size:13px;order:3;width:100%}
+    .yr-hdr .yr{font-size:16px}
+    .dtbl{min-width:400px;font-size:13px}
+    .dtbl th,.dtbl td{padding:7px 10px}
+    .data-table th,.data-table td{padding:7px 8px}
+    .data-table .num-input{max-width:70px}
+    .data-table .year-input{max-width:80px}
+    .calc-btn-wrap .btn{min-height:48px;padding:0 26px;flex:1}
+    .results-header{padding:14px 16px;font-size:18px}
+    .results-body{padding:16px 12px}
+    .rules-hero{padding:24px 20px!important}
+    .rules-hero h2{font-size:23px!important}
     /* 16px minimum stops iOS zooming the page when a field is focused */
-    .field input,.field select,.data-table input,.data-table select,
-    .dateint,input[type=number],input[type=text],select{font-size:16px}
+    .field input,.field select,.data-table input,.data-table select,.dateint,input[type=number],input[type=text],select{font-size:16px}
   }
   @media(max-width:480px){
-    .field input,.field select,.data-table input,.data-table select,
-    .dateint,input[type=number],input[type=text],select{font-size:16px}
-    .data-table .num-input{max-width:70px}
-    .data-table .year-input{max-width:72px}
     .header h1{font-size:16px}
-    .subhead-row{margin-top:12px}
+    .header .badge{font-size:11px;padding:2px 8px}
+    .card{padding:16px 12px}
   }
 
-  /* ============================================================
-     VISUAL REFRESH — white page, near-black text, navy chrome
-     ============================================================ */
-  .header h1{font-size:21px;letter-spacing:-0.2px;font-weight:700}
-  .header .badge{background:#2B7BC4;font-weight:600;letter-spacing:0.4px}
-  .card{border:1px solid #E3E8EF;box-shadow:0 1px 2px rgba(16,24,40,0.04);border-radius:10px}
-  .card h2{font-size:17px;font-weight:650;letter-spacing:-0.2px;color:#0F2E52}
-  .field label{font-weight:600;color:#1F2937;font-size:14px}
-  .field input,.field select{border-radius:8px;border-color:#CBD5E1}
-  .field input:focus,.field select:focus{border-color:#2B7BC4;box-shadow:0 0 0 3px rgba(43,123,196,0.15)}
-  .btn{border-radius:8px;letter-spacing:0.1px}
-  .btn-secondary{background:#EEF2F7;color:#1F2937;border:1px solid #E3E8EF}
-  .btn-secondary:hover{background:#E3E8EF}
-  .tab-btn{font-weight:600;letter-spacing:0.1px}
-  .tabs{border-bottom-color:#E3E8EF}
-  .info-box{background:#EAF2FB;border-left-color:#2B7BC4;border-radius:8px;color:#1F2937}
-  .rbd-badge{background:#EAF2FB;border-color:#BDD7EE;border-radius:8px;color:#0F2E52}
-  .results-card{border-color:#0F2E52;border-radius:10px}
-  .results-header{background:#0F2E52;letter-spacing:0.2px}
-  .data-table th,.dtbl th{color:#4B5563;letter-spacing:0.3px;text-transform:uppercase;font-size:11px}
-  .yr-group{border-radius:8px;border-color:#E3E8EF}
-  .yr-hdr{background:#F6F8FB}
-  .yr-hdr .yr{color:#0F2E52}
-  .sum-line{background:#F6F8FB;border:1px solid #E3E8EF;border-radius:8px;color:#374151}
-  .rnote{background:#F6F8FB;border-color:#E3E8EF;color:#6B7280}
-  .table-note{background:#F6F8FB;border:1px solid #E3E8EF;border-radius:8px}
-  .ref-table th{text-transform:uppercase;letter-spacing:0.3px;font-size:11px;color:#4B5563}
-  .callout{border-radius:8px}
-  .site-footer strong{letter-spacing:0.2px}
-  a{color:#1A5CA8}
-  .mainnav a{color:#C7D5E5;font-weight:500}
-  .mainnav a.on{border-bottom-color:#2B7BC4}
-
-  /* --- guide pages --- */
-  .crumb{font-size:13px;color:#6B7280;margin:0 0 14px;padding:0 2px}
-  .crumb a{color:#1A5CA8;text-decoration:none}
-  .crumb a:hover{text-decoration:underline}
-  .rule-card h1{font-size:26px;line-height:1.25;color:#0F2E52;margin:0 0 16px;letter-spacing:-0.4px;font-weight:700}
-  .rule-card h2{font-size:19px;color:#0F2E52;margin:26px 0 10px;padding:0;border:none;letter-spacing:-0.2px}
-  .rule-card .lead{font-size:18px;line-height:1.6;color:#1F2937;margin-bottom:18px}
-  .cta-box{margin-top:28px;padding:20px;background:#EAF2FB;border:1px solid #BDD7EE;border-radius:8px}
-  .cta-box p{font-size:15px;color:#1F2937;margin:0 0 14px;line-height:1.65}
-  .cta-box .btn{text-decoration:none;display:inline-block}
-  ul.related{list-style:none;margin:0;padding:0}
-  ul.related li{padding:9px 0;border-bottom:1px solid #E3E8EF;font-size:15px}
-  ul.related li:last-child{border-bottom:none}
-  ul.related a{color:#1A5CA8;text-decoration:none}
-  ul.related a:hover{text-decoration:underline}
-  .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:14px}
-  .guide-grid a{display:block;padding:14px 16px;background:#F6F8FB;border:1px solid #E3E8EF;border-left:3px solid #2B7BC4;border-radius:0 8px 8px 0;text-decoration:none;color:#0F2E52;font-size:15px;font-weight:600;line-height:1.45}
-  .guide-grid a:hover{background:#EAF2FB}
-  .guide-grid a span{display:block;font-weight:400;font-size:13px;color:#6B7280;margin-top:4px}
-  @media(max-width:700px){.rule-card h1{font-size:22px}.rule-card .lead{font-size:16px}}
+  /* ---------- print ---------- */
+  @media print{
+    body{background:#fff}
+    .header{position:static;backdrop-filter:none}
+    .tabs,.site-footer,.btn,.calc-btn-wrap,.skip{display:none!important}
+    .tab-content{display:block!important;animation:none}
+    .yr-det.collapsed{display:block!important}
+    .guide .guide-body{display:block!important}
+    .card{box-shadow:none;border:1px solid var(--line);break-inside:avoid}
+    .results-card{box-shadow:none}
+  }
 </style>
 </head>
 <body>
@@ -303,11 +289,16 @@
 <a class="skip" href="#main">Skip to the calculator</a>
 
 <header class="header">
-  <h1>RMD Calculator</h1>
-  <span class="badge" style="background:#0F2E52;border:1px solid #1A5CA8;">SECURE 2.0</span>
+  <div class="header-inner">
+    <span class="brand-mark" aria-hidden="true">R</span>
+    <h1>RMD Calculator</h1>
+    <span class="badge">SECURE 2.0</span>
+    <span class="privacy">Runs in your browser &middot; nothing is stored</span>
+  </div>
 </header>
 
 <div class="subhead-row">
+  <p class="intro-title">Required Minimum Distributions, worked out properly.</p>
   <p class="subhead">Calculate Required Minimum Distributions for active, terminated and deceased participants &mdash; built to the SECURE 2.0 applicable ages and the July 2024 final regulations.</p>
 
 </div>
@@ -421,7 +412,7 @@
     </div>
     <div class="calc-btn-wrap">
       <button class="btn btn-primary" onclick="atCalc()">Calculate RMD</button>
-      <button class="btn btn-secondary" onclick="atReset()" style="margin-left:12px;">Reset</button>
+      <button class="btn btn-secondary" onclick="atReset()">Reset</button>
     </div>
     <div id="atResults" class="hidden">
       <div class="card results-card">
@@ -430,7 +421,7 @@
           <div id="atRulesSummary" class="info-box"></div>
           <div id="atResultsContainer"></div>
           <div id="atResultsSummary" class="sum-line"></div>
-          <button class="btn btn-secondary btn-sm" onclick="switchTab('rules')" style="margin-top:12px;background:#1A5CA8;color:#fff;">&#8505;&#65039; Rules &amp; Guidance</button>
+          <button class="btn btn-secondary btn-sm" onclick="switchTab('rules')" style="margin-top:12px;">&#8505;&#65039; Rules &amp; Guidance</button>
           <button class="btn btn-secondary btn-sm" onclick="atGenReport()" style="margin-top:12px;">&#128203; Generate Report (PDF)</button>
           <div class="rnote"><strong>Important:</strong> Estimates only. Uses the IRS Uniform Lifetime Table (Table III) or Joint Life and Last Survivor Table (Table II) per &sect;1.401(a)(9)-9. See disclaimer below.</div>
         </div>
@@ -551,7 +542,7 @@
           <div id="dcRulesSummary" class="info-box"></div>
           <div id="dcResultsContainer"></div>
           <div id="dcResultsSummary" class="sum-line"></div>
-          <button class="btn btn-secondary btn-sm" onclick="switchTab('rules')" style="margin-top:12px;background:#1A5CA8;color:#fff;">&#8505;&#65039; Rules &amp; Guidance</button>
+          <button class="btn btn-secondary btn-sm" onclick="switchTab('rules')" style="margin-top:12px;">&#8505;&#65039; Rules &amp; Guidance</button>
           <button class="btn btn-secondary btn-sm" onclick="dcGenReport()" style="margin-top:12px;">&#128203; Generate Report (PDF)</button>
           <div class="rnote"><strong>Important:</strong> Estimates only. Based on IRS Table I (Single Life Expectancy) and the July 2024 final regulations under &sect;401(a)(9). See disclaimer below.</div>
         </div>
@@ -679,7 +670,7 @@
           <div id="dgRulesSummary" class="info-box"></div>
           <div id="dgResultsContainer"></div>
           <div id="dgResultsSummary" class="sum-line"></div>
-          <button class="btn btn-secondary btn-sm" onclick="switchTab('rules')" style="margin-top:12px;background:#1A5CA8;color:#fff;">&#8505;&#65039; Rules &amp; Guidance</button>
+          <button class="btn btn-secondary btn-sm" onclick="switchTab('rules')" style="margin-top:12px;">&#8505;&#65039; Rules &amp; Guidance</button>
           <button class="btn btn-secondary btn-sm" onclick="dgGenReport()" style="margin-top:12px;">&#128203; Generate Report (PDF)</button>
           <div class="rnote"><strong>Important:</strong> Estimates only. Based on IRS Table I (Single Life Expectancy) and the July 2024 final regulations under &sect;401(a)(9). See disclaimer below.</div>
         </div>
@@ -690,9 +681,9 @@
   <!-- TAB: RULES & GUIDANCE -->
   <div id="tab-rules" class="tab-content" role="tabpanel" aria-labelledby="tabbtn-rules" tabindex="0">
 
-    <div class="card" style="background:linear-gradient(150deg,#123A63,#0A2340);color:#fff;border:none;padding:32px 34px;">
+    <div class="card rules-hero">
       <h2 style="color:#fff;border:none;padding:0;margin-bottom:8px;font-size:22px;">RMD Rules &amp; Guidance</h2>
-      <p style="font-size:15px;opacity:0.92;line-height:1.65;max-width:72ch;">A working reference to the rules this calculator applies, current to the SECURE 2.0 applicable ages and the final regulations issued 19 July 2024. Written for people who process distributions rather than for participants.</p>
+      <p style="font-size:15px;opacity:0.92;line-height:1.65;">A working reference to the rules this calculator applies, current to the SECURE 2.0 applicable ages and the final regulations issued 19 July 2024. Written for people who process distributions rather than for participants.</p>
     </div>
 
     <div class="card rule-card" style="border:2px solid #B45309;background:#FFFBEB;">
@@ -1010,7 +1001,7 @@ A <strong>sole surviving spouse recalculates</strong> &mdash; looking up Table I
   </div>
 
   <!-- DISCLAIMER -->
-  <div class="card" style="border:1px solid #FCD34D;background:#FFFBEB;">
+  <div class="card disclaimer-card">
     <h2 style="color:#B45309;border-bottom-color:#FCD34D;font-size:16px;">⚠️ Disclaimer &amp; Terms of Use</h2>
     <div style="font-size:15px;color:#78350F;line-height:1.8;">
       <p style="margin-bottom:10px;"><strong>For Estimation Purposes Only.</strong> This calculator provides <em>estimates</em> of Required Minimum Distributions (RMDs) based on user-provided inputs and IRS life expectancy tables. It is not a substitute for professional tax or legal advice. Actual RMD amounts may differ based on your specific plan documents, beneficiary designations, account valuations, and applicable tax laws.</p>
