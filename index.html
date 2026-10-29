@@ -179,10 +179,24 @@
   .ref-table th{background:#EEF2F7;padding:9px 12px;text-align:left;border-bottom:2px solid #E3E8EF;font-weight:600;font-size:13px}
   .ref-table td{padding:8px 12px;border-bottom:1px solid #E3E8EF;vertical-align:top}
   .ref-table tr:last-child td{border-bottom:none}
+  .guide-list{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .guide{border:1px solid #E3E8EF;border-radius:6px;background:#fff}
+  .guide[open]{border-color:#1A5CA8}
+  .guide summary{cursor:pointer;padding:14px 18px;font-size:15px;font-weight:600;color:#0F2E52;list-style:none;display:flex;flex-direction:column;gap:3px}
+  .guide summary::-webkit-details-marker{display:none}
+  .guide summary::after{content:"+";position:absolute;right:18px;top:12px;font-size:20px;color:#1A5CA8}
+  .guide summary{position:relative;padding-right:44px}
+  .guide[open] summary::after{content:"\2212"}
+  .guide summary:hover{background:#F5F8FC}
+  .guide-tag{font-size:11px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;color:#1A5CA8}
+  .guide-body{padding:4px 18px 16px;border-top:1px solid #E3E8EF}
+  .guide-body .lead{font-size:16px!important;color:#0F2E52!important;font-weight:500;margin-top:12px}
+  .guide-body h3{margin-top:20px!important}
   @media print{
     .tabs,.site-footer,.btn,.calc-btn-wrap,.skip{display:none!important}
     .tab-content{display:block!important}
     .yr-det.collapsed{display:block!important}
+    .guide .guide-body{display:block!important}
     body{background:#fff}
     .card{box-shadow:none;border:1px solid #E3E8EF;break-inside:avoid}
   }
@@ -777,6 +791,219 @@
       </ul>
       <div class="callout">
         This page summarises the rules the calculator applies. It is a working reference, not advice, and it does not cover every fact pattern &mdash; QDRO alternate payees, annuitised balances under Reg. &sect;1.401(a)(9)-6, QLACs and plan-specific document limits all sit outside it. Confirm anything consequential against the regulations or with a qualified adviser.
+      </div>
+    </div>
+
+    <div class="card rule-card" id="detailed-guides">
+      <h2>Detailed guides</h2>
+      <p>Each of these covers one question in depth, with worked examples. Click a question to expand it.</p>
+      <div class="guide-list">
+        <details class="guide" id="guide-ten-year-rule-annual-rmds">
+          <summary><span class="guide-tag">10-year rule</span>Does the 10-year rule require annual RMDs?</summary>
+          <div class="guide-body">
+<p class="lead">Both, or neither, depending on one fact: whether the participant died before or on/after their Required Beginning Date.</p>
+
+<div class="callout warn">
+<strong>Death on or after the RBD</strong> &rarr; annual RMDs in years 1&ndash;9 <em>and</em> full distribution by 31 December of year 10. Both obligations.<br><br>
+<strong>Death before the RBD</strong> &rarr; no annual RMD. Only the year-10 deadline.
+</div>
+
+<h3>Why this was unclear for four years</h3>
+<p>The SECURE Act replaced the lifetime stretch with a 10-year rule for most non-spouse beneficiaries in 2020. The statute said the account had to be emptied within ten years, but it did not clearly say whether distributions were required along the way.</p>
+<p>Practitioners split. The IRS proposed regulations in February 2022 taking the position that annual RMDs <em>were</em> required after a post-RBD death, which surprised a large part of the industry. Final regulations issued 19 July 2024 confirmed that reading.</p>
+<p>Many public calculators were written during that ambiguous window and never revisited. If a tool applies the 10-year rule without asking whether death was before or after the RBD, it cannot be producing the right answer for both cases.</p>
+
+<h3>The reasoning</h3>
+<p>The rule follows from the "at least as rapidly" principle in IRC &sect;401(a)(9)(B)(i). Once a participant has begun taking RMDs, distributions must continue at least as rapidly after death as they were being made before it. A participant who has passed their RBD has begun; one who has not, has not. The 10-year deadline is then layered on top for a Non-Eligible Designated Beneficiary.</p>
+
+<h3>The transition relief</h3>
+<p>Because the industry genuinely did not know, the IRS waived the annual RMDs for 2021, 2022, 2023 and 2024 through Notices 2022-53, 2023-54 and 2024-35. No penalty, and no requirement to make the missed years up. <strong>Enforcement effectively begins with the 2025 distribution year.</strong></p>
+
+<h3>Worked example</h3>
+<p>A participant born in March 1950 reached the applicable age of 72 in 2022, so their Required Beginning Date was 1 April 2023. They died in May 2026. Their sole beneficiary is an adult child born in 1980, who is a Non-Eligible Designated Beneficiary.</p>
+<p>Death was on or after the RBD, so the child must:</p>
+<ul>
+<li>Take an annual RMD from 2027 onward, starting with the Table I factor of 39.0 for attained age 47, reduced by one each year</li>
+<li>Take the participant's own 2026 RMD, to the extent it was not distributed before death</li>
+<li>Empty the account entirely by <strong>31 December 2036</strong></li>
+</ul>
+<p>Had the same participant died in February 2023 &mdash; two months before their RBD &mdash; the child would owe nothing until 2036, then everything.</p>
+
+<h3>Which beneficiaries this applies to</h3>
+<p>The 10-year rule applies to Non-Eligible Designated Beneficiaries: adult children, grandchildren, most other individuals, and see-through trusts for them. Eligible Designated Beneficiaries take life expectancy instead, and Non-Designated Beneficiaries such as an estate or charity fall under the 5-year rule or the participant's remaining life expectancy.</p>
+          </div>
+        </details>
+        <details class="guide" id="guide-rmd-age-73-or-75">
+          <summary><span class="guide-tag">RMD age</span>Is the RMD age 73 or 75?</summary>
+          <div class="guide-body">
+<p class="lead">Neither, on its own. SECURE 2.0 &sect;107 replaced a single RMD age with a ladder keyed to date of birth.</p>
+
+<table class="ref-table">
+<thead><tr><th>Date of birth</th><th>Applicable age</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Before 1 July 1949</td><td><strong>70&frac12;</strong></td><td>Reached 70&frac12; before 2020, so the pre-SECURE rule was locked in</td></tr>
+<tr><td>1 July 1949 &ndash; 31 Dec 1950</td><td><strong>72</strong></td><td>SECURE Act 1.0</td></tr>
+<tr><td>1951 &ndash; 1959</td><td><strong>73</strong></td><td>SECURE 2.0</td></tr>
+<tr><td>1960 or later</td><td><strong>75</strong></td><td>SECURE 2.0</td></tr>
+</tbody>
+</table>
+
+<h3>The 1949 boundary is mid-year</h3>
+<p>This is the detail most systems get wrong. The cut is not 1 January 1949 but <strong>1 July 1949</strong>, because the original test was whether someone reached age 70&frac12; before 1 January 2020.</p>
+<p>Someone born in March 1949 turned 70&frac12; in September 2019 &mdash; before the deadline &mdash; so they kept the old rule and their first distribution year was 2019. Someone born in September 1949 turned 70&frac12; in March 2020, missed it, and moved to age 72. Two people born six months apart, on entirely different schedules.</p>
+
+<h3>Why 1959 needed a fix</h3>
+<p>SECURE 2.0 was drafted so that age 73 applied to anyone reaching 72 after 2022, and age 75 to anyone reaching 74 after 2032. Someone born in 1959 satisfies both conditions, which left their applicable age genuinely ambiguous in the statute.</p>
+<p>The proposed regulations issued in July 2024 resolved it: <strong>a 1959 birth year uses age 73.</strong> Any tool still deriving the age arithmetically from the statute may return 75 for that cohort.</p>
+
+<h3>The age is not the deadline</h3>
+<p>Reaching the applicable age starts the clock, but the first payment is not due that year. The Required Beginning Date is 1 April of the year <em>following</em> the year the applicable age is reached &mdash; and deferring to that date puts two RMDs into a single tax year.</p>
+          </div>
+        </details>
+        <details class="guide" id="guide-required-beginning-date">
+          <summary><span class="guide-tag">Required Beginning Date</span>Required Beginning Date: April 1 of which year?</summary>
+          <div class="guide-body">
+<p class="lead">1 April of the year <strong>following</strong> the year the applicable age is reached. Not 1 April of that year &mdash; a distinction that quietly breaks a lot of software.</p>
+
+<table class="ref-table">
+<thead><tr><th>Date of birth</th><th>Applicable age</th><th>Reaches it in</th><th>Required Beginning Date</th></tr></thead>
+<tbody>
+<tr><td>15 June 1953</td><td>73</td><td>2026</td><td>1 April <strong>2027</strong></td></tr>
+<tr><td>1 February 1951</td><td>73</td><td>2024</td><td>1 April <strong>2025</strong></td></tr>
+<tr><td>9 August 1960</td><td>75</td><td>2035</td><td>1 April <strong>2036</strong></td></tr>
+</tbody>
+</table>
+
+<h3>Why the off-by-one matters more than it looks</h3>
+<p>For a living participant, getting this wrong only mislabels a date. For a <em>deceased</em> participant it changes everything, because "died before the RBD" versus "died on or after the RBD" is the single branch that determines the entire beneficiary rule set &mdash; whether annual RMDs are required, whether the 5-year or 10-year rule applies, and which life expectancy is used.</p>
+<p>A participant who turns 73 in 2026 and dies in December 2026 died <strong>before</strong> their RBD, even though they were past the applicable age all year. Software that places the RBD in 2026 will classify that death as post-RBD and produce a materially different schedule.</p>
+
+<h3>The two-RMD year</h3>
+<div class="callout">
+The first distribution year is the year the applicable age is reached, but payment can be deferred to the RBD. Defer, and <strong>two RMDs fall in the following calendar year</strong>: the deferred first-year amount by 1 April, and the second-year amount by 31 December. Both are taxable in that year.
+</div>
+<p>For a participant near a bracket threshold, an IRMAA cliff, or a Social Security taxability threshold, taking the first RMD by 31 December of the first year is often the better outcome. The deferral is an option, not an instruction.</p>
+
+<h3>When retirement moves the date</h3>
+<p>For employer plans only, a participant who is not a 5% owner may defer the RBD to 1 April following the year they actually retire. That is the still-working exception, and it has conditions worth checking.</p>
+          </div>
+        </details>
+        <details class="guide" id="guide-eligible-designated-beneficiary">
+          <summary><span class="guide-tag">EDB vs NEDB</span>Eligible vs Non-Eligible Designated Beneficiary</summary>
+          <div class="guide-body">
+<p class="lead">After a death, almost everything turns on which of three categories each beneficiary falls into.</p>
+
+<table class="ref-table">
+<thead><tr><th>Category</th><th>Who</th><th>Died before RBD</th><th>Died on/after RBD</th></tr></thead>
+<tbody>
+<tr><td><strong>EDB</strong></td><td>Spouse; minor child <em>of the participant</em>; disabled; chronically ill; anyone not more than 10 years younger</td><td>Life expectancy, or elect the 10-year rule</td><td>Life expectancy, never shorter than the participant's own remaining life expectancy</td></tr>
+<tr><td><strong>NEDB</strong></td><td>Adult children, grandchildren, most other individuals, see-through trusts for them</td><td>10-year rule, no annual RMD</td><td>Annual RMDs years 1&ndash;9 <em>and</em> empty by year 10</td></tr>
+<tr><td><strong>NDB</strong></td><td>Estate, charity, any non-person, non-see-through trust</td><td>5-year rule</td><td>The participant's remaining life expectancy &mdash; the "ghost" rule</td></tr>
+</tbody>
+</table>
+
+<h3>Four distinctions that catch people out</h3>
+
+<h3>"Minor child" means the participant's own child</h3>
+<p>A grandchild, niece or nephew under 21 is <strong>not</strong> an EDB. And the exception ends at 21, not at the local age of majority: life-expectancy payments run until the child turns 21, then the 10-year rule takes over, so the account must be empty by 31 December of the year they turn 31.</p>
+
+<h3>Naming a charity alongside individuals is corrosive</h3>
+<p>Without separate accounts, a single non-person beneficiary makes the <strong>entire</strong> account a Non-Designated Beneficiary account. A 10% charitable share can put the other 90% onto the 5-year rule.</p>
+
+<h3>Separate accounts have a hard deadline</h3>
+<p>Establish them by <strong>31 December of the year following death</strong> and each beneficiary uses their own life expectancy and their own category. Miss it and everyone is measured by the oldest beneficiary and by the least favourable category present.</p>
+
+<h3>A see-through trust is not an estate</h3>
+<p>A conduit trust generally passes the underlying beneficiary's status straight through. An accumulation trust is usually treated as a Non-Eligible Designated Beneficiary unless it qualifies as an applicable multi-beneficiary trust for a disabled or chronically ill beneficiary. Only a non-see-through trust falls back to Non-Designated Beneficiary treatment.</p>
+
+<h3>The determination date</h3>
+<p>Status is fixed as of the participant's death, but the <em>set</em> of beneficiaries is finally determined on <strong>30 September of the year following death</strong>. That leaves room for a qualified disclaimer within nine months, or a full cash-out of one beneficiary's share, to change the outcome for everyone else.</p>
+          </div>
+        </details>
+        <details class="guide" id="guide-still-working-exception">
+          <summary><span class="guide-tag">Still-working exception</span>The still-working exception to RMDs</summary>
+          <div class="guide-body">
+<p class="lead">A participant who is still employed can defer their Required Beginning Date to 1 April following the year they retire. Three conditions must all hold.</p>
+
+<h3>1. It must be an employer plan</h3>
+<p>401(k), 403(b) and governmental 457(b) accounts qualify. <strong>IRAs, SEP IRAs and SIMPLE IRAs never do</strong>, regardless of employment status. An IRA owner still working at 80 must still take RMDs from that IRA.</p>
+<p>The exception also applies only to the plan of the employer the participant still works for. Balances left in a former employer's plan are not covered.</p>
+
+<h3>2. The participant must not be a 5% owner</h3>
+<p>A more-than-5% owner of the business sponsoring the plan is excluded. Ownership is tested for the plan year ending in the calendar year the participant reaches the applicable age &mdash; and once a 5% owner at that point, always a 5% owner for this purpose, even if they later sell down.</p>
+<p>Attribution rules under IRC &sect;318 apply, so ownership held by a spouse, children, grandchildren or parents can be counted. This is the condition most often assessed too casually.</p>
+
+<h3>3. The plan document must permit it</h3>
+<p>The exception is optional. A plan may require every participant to begin at the applicable age regardless of employment. The document controls, and it is worth checking rather than assuming.</p>
+
+<h3>What the deferral actually does</h3>
+<p>Where all three conditions hold, the RBD becomes 1 April following the later of the year the participant reaches the applicable age or the year they retire. If someone reaches 73 in 2026 and retires in 2030, their first distribution year is 2030 and their RBD is 1 April 2031.</p>
+
+<div class="callout">
+<strong>The trap:</strong> retiring in December rather than January costs a full distribution year. Retirement date, not just retirement year, is worth planning around.
+</div>
+
+<h3>The consequence at death</h3>
+<p>Because the still-working exception moves the RBD, it also moves the before/after-RBD line that governs every beneficiary's schedule. A participant who dies while still working, having never reached their deferred RBD, is treated as dying <em>before</em> the RBD &mdash; which for a Non-Eligible Designated Beneficiary means the 10-year rule with no annual distributions.</p>
+          </div>
+        </details>
+        <details class="guide" id="guide-year-of-death-rmd">
+          <summary><span class="guide-tag">Year-of-death RMD</span>Year-of-death RMD: who takes it?</summary>
+          <div class="guide-body">
+<p class="lead">The beneficiaries take it. The obligation does not die with the participant.</p>
+
+<h3>When it applies</h3>
+<p>If a participant dies <strong>on or after</strong> their Required Beginning Date and had not taken their full RMD for that calendar year, the shortfall must still come out &mdash; distributed to whoever inherits, in proportion to their shares unless the beneficiaries agree otherwise.</p>
+<p>If the participant died <em>before</em> their RBD, there is no year-of-death RMD, because no distribution was yet required.</p>
+
+<h3>How the amount is calculated</h3>
+<p>On the <strong>participant's</strong> own figures, not the beneficiary's. It is the RMD the participant would have owed: their prior year-end balance divided by their own distribution period, using the Uniform Lifetime Table at their attained age in the year of death, or the Joint Life table if their spouse was sole beneficiary and more than 10 years younger.</p>
+<p>The beneficiary's own schedule begins the <em>following</em> year and is a separate calculation entirely.</p>
+
+<h3>The deadline, and the relief</h3>
+<p>Strictly, the year-of-death RMD is due by 31 December of the year of death &mdash; which is unhelpful when someone dies in late December, or when the estate takes months to identify beneficiaries.</p>
+<div class="callout">
+The July 2024 final regulations added an <strong>automatic waiver of the &sect;4974 excise tax</strong> where the year-of-death amount is distributed by the beneficiary's tax filing deadline, including extensions, for the year following the participant's death. No Form 5329 request needed.
+</div>
+
+<h3>Where it gets missed</h3>
+<p>This is one of the most commonly overlooked obligations in distribution processing. The participant's account is closed, the beneficiary's inherited account is opened, and the outstanding amount from the year of death falls between the two. It is worth a standing check on every post-RBD death file.</p>
+
+<h3>Aggregation still applies</h3>
+<p>If the participant had several IRAs, the year-of-death RMD is calculated across all of them but can be satisfied from any one. Qualified plan balances cannot be aggregated &mdash; each plan must pay its own.</p>
+          </div>
+        </details>
+        <details class="guide" id="guide-rmd-tables-which-one">
+          <summary><span class="guide-tag">Which IRS table</span>IRS RMD tables: which one applies?</summary>
+          <div class="guide-body">
+<p class="lead">Three tables in Reg. &sect;1.401(a)(9)-9, three distinct uses.</p>
+
+<table class="ref-table">
+<thead><tr><th>Table</th><th>Used for</th><th>Method</th></tr></thead>
+<tbody>
+<tr><td><strong>III</strong> &mdash; Uniform Lifetime</td><td>Nearly every living participant</td><td>Attained age in the distribution year</td></tr>
+<tr><td><strong>II</strong> &mdash; Joint Life &amp; Last Survivor</td><td>Only where the spouse is sole beneficiary for the entire year <em>and</em> is <strong>more than</strong> 10 years younger</td><td>Both attained ages, tested afresh each year</td></tr>
+<tr><td><strong>I</strong> &mdash; Single Life</td><td>Beneficiaries of a deceased participant</td><td>Fixed term reduced by one each year &mdash; except a sole spouse, who recalculates</td></tr>
+</tbody>
+</table>
+
+<h3>Attained age, not age today</h3>
+<p>Every lookup uses the age the person reaches on their birthday <em>in that calendar year</em>, not their age on the date of calculation. Someone born in November is treated as their year-end age from 1 January onward.</p>
+
+<h3>Table II: more than 10 years, tested every year</h3>
+<p>The threshold is <em>more than</em> 10 years younger. A spouse exactly 10 years younger does not qualify. And because attained ages shift, the test must be run for each distribution year rather than settled once &mdash; a couple can move in and out of eligibility across a schedule.</p>
+<p>The spouse must also be the sole beneficiary for the entire year. Adding a contingent beneficiary mid-year breaks it.</p>
+
+<h3>The recalculation trap in Table I</h3>
+<div class="callout warn">
+A <strong>sole surviving spouse recalculates</strong> &mdash; looking up Table I afresh at their attained age each year. Every other beneficiary takes an initial factor and <strong>subtracts one</strong> each year. The two methods diverge immediately and the gap compounds.
+</div>
+<p>Applying subtract-one to a spouse understates their life expectancy every year after the first, and produces a distribution that is too large and accelerates over time.</p>
+
+<h3>The 2022 update, and the reset</h3>
+<p>All three tables were replaced effective 1 January 2022 to reflect longer life expectancies. For a beneficiary whose schedule started earlier, the transition is a <em>reset</em>: recompute the initial factor under the new table for the first distribution year, then subtract one for each year elapsed since. You do not simply continue the old series.</p>
+          </div>
+        </details>
       </div>
     </div>
 
